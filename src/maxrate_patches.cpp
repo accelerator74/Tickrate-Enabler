@@ -34,7 +34,6 @@
 #include "thirdparty/memutils.h"
 #include "patchexceptions.h"
 #include "basicbinpatch.h"
-#include "sigs.h"
 
 NetChanDataRatePatch::NetChanDataRatePatch(BYTE* engine) : m_patch(NULL)
 {
@@ -85,7 +84,7 @@ ICodePatch* NetChanDataRatePatch::GeneratePatch(BYTE* pCNetChanSetDataRate)
 #endif
 }
 
-#if defined (CGAMECLIENT_PATCH)
+#if defined (SIG_CGAMECLIENT_SETDATARATE)
 GameClientSetRatePatch::GameClientSetRatePatch(BYTE* engine) : m_patch(NULL)
 {
 	m_patch = GeneratePatch(FindCGameClientSetRate(engine));
@@ -139,8 +138,6 @@ ICodePatch* GameClientSetRatePatch::GeneratePatch(BYTE* pCGameClientSetRate)
 }
 #endif
 
-#if defined (CLAMPCLIENTRATE_PATCH)
-
 ClampClientRatePatch::ClampClientRatePatch(BYTE* engine) : m_patch(NULL)
 {
 	m_patch = GeneratePatch(FindClampClientRate(engine));
@@ -192,4 +189,3 @@ ICodePatch* ClampClientRatePatch::GeneratePatch(BYTE* pClampClientRate)
 	return new BasicStaticBinPatch<sizeof(replacement)>(pClampClientRate + CLAMPCLIENTRATE_PATCH_OFFSET, replacement);
 #endif
 }
-#endif

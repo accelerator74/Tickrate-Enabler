@@ -48,7 +48,7 @@
  // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define TE_VERSION "1.5.2"
+#define TE_VERSION "1.6"
 
 L4DTickRate g_L4DTickRatePlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(L4DTickRate, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_L4DTickRatePlugin);
@@ -112,12 +112,11 @@ bool L4DTickRate::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gam
 	try {
 		m_patchManager.Register(new BoomerVomitFrameTimePatch(g_pGameDll));
 		m_patchManager.Register(new NetChanDataRatePatch((BYTE*)g_pEngine));
-#if defined (CGAMECLIENT_PATCH)
+#if defined (SIG_CGAMECLIENT_SETDATARATE)
 		m_patchManager.Register(new GameClientSetRatePatch((BYTE*)g_pEngine));
 #endif
-#if defined (CLAMPCLIENTRATE_PATCH)
+
 		m_patchManager.Register(new ClampClientRatePatch((BYTE*)g_pEngine));
-#endif
 
 		m_patchManager.PatchAll();
 	} catch (PatchException& e) {

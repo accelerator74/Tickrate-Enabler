@@ -33,18 +33,7 @@
 
 #include "thirdparty/codepatch/icodepatch.h"
 #include "misc_asm.h"
-
-#if defined (_WIN32)
-	#define CGAMECLIENT_PATCH
-#if defined (_L4D2)
-	#define CLAMPCLIENTRATE_PATCH
-#endif
-#elif defined (_LINUX)
-	#define CLAMPCLIENTRATE_PATCH
-#if defined (_L4D)
-	#define CGAMECLIENT_PATCH
-#endif
-#endif
+#include "sigs.h"
 
 class NetChanDataRatePatch : public ICodePatch
 {
@@ -60,7 +49,7 @@ private:
 	ICodePatch* m_patch;
 };
 
-#if defined (CGAMECLIENT_PATCH)
+#if defined (SIG_CGAMECLIENT_SETDATARATE)
 class GameClientSetRatePatch : public ICodePatch
 {
 public:
@@ -76,7 +65,6 @@ private:
 };
 #endif
 
-#if defined (CLAMPCLIENTRATE_PATCH)
 class ClampClientRatePatch : public ICodePatch
 {
 public:
@@ -90,6 +78,5 @@ private:
 	ICodePatch* GeneratePatch(BYTE* pClampClientRate);
 	ICodePatch* m_patch;
 };
-#endif
 
 #endif // __MAXRATE_PATCHES_H__
