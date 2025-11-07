@@ -49,28 +49,30 @@
 class NetChanDataRatePatch : public ICodePatch
 {
 public:
-	NetChanDataRatePatch(BYTE * engine);
+	NetChanDataRatePatch(BYTE* engine);
 	~NetChanDataRatePatch();
 	void Patch();
 	void Unpatch();
+
 private:
-	BYTE * FindCNetChanSetDataRate(BYTE * engine);
-	ICodePatch * GeneratePatch(BYTE * pCNetChanSetDataRate);
-	ICodePatch * m_patch;
+	BYTE* FindCNetChanSetDataRate(BYTE* engine);
+	ICodePatch* GeneratePatch(BYTE* pCNetChanSetDataRate);
+	ICodePatch* m_patch;
 };
 
 #if defined (CGAMECLIENT_PATCH)
 class GameClientSetRatePatch : public ICodePatch
 {
 public:
-	GameClientSetRatePatch(BYTE * engine);
+	GameClientSetRatePatch(BYTE* engine);
 	~GameClientSetRatePatch();
 	void Patch();
 	void Unpatch();
+
 private:
-	BYTE * FindCGameClientSetRate(BYTE * engine);
-	ICodePatch * GeneratePatch(BYTE * pCGameClientSetRate);
-	ICodePatch * m_patch;
+	BYTE* FindCGameClientSetRate(BYTE* engine);
+	ICodePatch* GeneratePatch(BYTE* pCGameClientSetRate);
+	ICodePatch* m_patch;
 };
 #endif
 
@@ -78,15 +80,16 @@ private:
 class ClampClientRatePatch : public ICodePatch
 {
 public:
-	ClampClientRatePatch(BYTE * engine);
+	ClampClientRatePatch(BYTE* engine);
 	~ClampClientRatePatch();
 	void Patch();
 	void Unpatch();
+
 private:
-	BYTE * FindClampClientRate(BYTE * engine);
-	ICodePatch * GeneratePatch(BYTE * pClampClientRate);
-	ICodePatch * m_patch;
+	BYTE* FindClampClientRate(BYTE* engine);
+	ICodePatch* GeneratePatch(BYTE* pClampClientRate);
+	ICodePatch* m_patch;
 };
 #endif
 
-#endif
+#endif // __MAXRATE_PATCHES_H__

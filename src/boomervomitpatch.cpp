@@ -33,17 +33,19 @@
 #include "boomervomitpatch.h"
 #include "patchexceptions.h"
 
-struct fakeGlobals {
+struct fakeGlobals
+{
 	float padding[4];
 	float frametime;
 };
 
-fakeGlobals g_FakeGlobals = { {0.0, 0.0, 0.0, 0.0}, 0.033333333};
-fakeGlobals *gp_FakeGlobals = &g_FakeGlobals;
+fakeGlobals g_FakeGlobals = { {0.0, 0.0, 0.0, 0.0}, 0.033333333 };
+fakeGlobals* gp_FakeGlobals = &g_FakeGlobals;
+
 #ifdef _LINUX
-#if defined (_L4D)
-	fakeGlobals **gpp_FakeGlobals = &gp_FakeGlobals; // olol
-#endif
+	#if defined (_L4D)
+		fakeGlobals** gpp_FakeGlobals = &gp_FakeGlobals; // olol
+	#endif
 #endif
 
 BoomerVomitFrameTimePatch::BoomerVomitFrameTimePatch(IServerGameDLL* gamedll)
@@ -61,7 +63,7 @@ void BoomerVomitFrameTimePatch::Patch()
 	m_patches.PatchAll();
 }
 
-void BoomerVomitFrameTimePatch::Unpatch() 
+void BoomerVomitFrameTimePatch::Unpatch()
 {
 	m_patches.UnpatchAll();
 }
@@ -70,23 +72,23 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 {
 	BYTE instr_buf[MAX_MOV_INSTR_LEN];
 
-	BYTE * pCVomitUpdateAbility = FindCVomitUpdateAbility(static_cast<void *>(gamedll));
+	BYTE* pCVomitUpdateAbility = FindCVomitUpdateAbility(static_cast<void*>(gamedll));
 	DevMsg("CVomitUpdateAbility at 0x%08x\n", pCVomitUpdateAbility);
 
-	if(!pCVomitUpdateAbility)
+	if (!pCVomitUpdateAbility)
 	{
 		throw PatchException("Couldn't find CVomit::UpdateAbility() in server memory.");
 	}
 
-	for(size_t i = 0; i < NUM_FRAMETIME_READS; i++)
+	for (size_t i = 0; i < NUM_FRAMETIME_READS; i++)
 	{
 		DevMsg("Setting up patch for frametime read %d (offs:0x%x).\n", i, g_FrameTimeReadOffsets[i]);
 
 		// Calculate first offset target
-		BYTE * pTarget = pCVomitUpdateAbility + g_FrameTimeReadOffsets[i];
+		BYTE* pTarget = pCVomitUpdateAbility + g_FrameTimeReadOffsets[i];
 
 		int offs = mov_src_operand_offset(pTarget); // Find offset of disp32 in this particular mov instruction
-		if(offs == 0)
+		if (offs == 0)
 		{
 			// Throw an exception if we can't identify this offset (unexpected instruction!)
 			// TODO: More useful exception here.
@@ -100,24 +102,24 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 
 		// Plug in our super cool immediate address.
 #if defined (_WIN32)
-		*(fakeGlobals ***)(instr_buf + offs) = &gp_FakeGlobals;
+		*(fakeGlobals***)(instr_buf + offs) = &gp_FakeGlobals;
 #elif defined (_LINUX)
-#if defined (_L4D)
-		*(fakeGlobals ****)(instr_buf + offs) = &gpp_FakeGlobals;
-#elif defined (_L4D2)
-		*(fakeGlobals ***)(instr_buf + offs) = &gp_FakeGlobals;
+	#if defined (_L4D)
+			*(fakeGlobals****)(instr_buf + offs) = &gpp_FakeGlobals;
+	#elif defined (_L4D2)
+			*(fakeGlobals***)(instr_buf + offs) = &gp_FakeGlobals;
+	#endif
 #endif
-#endif
-		
+
 		// Generate BasicBinPatch
 		m_patches.Register(new BasicStaticBinPatch<MAX_MOV_INSTR_LEN>(pTarget, instr_buf));
 	}
 }
 
-BYTE * BoomerVomitFrameTimePatch::FindCVomitUpdateAbility(void * gamedll)
+BYTE* BoomerVomitFrameTimePatch::FindCVomitUpdateAbility(void* gamedll)
 {
 #if defined (_LINUX)
-	return (BYTE *)g_MemUtils.SimpleResolve(gamedll, LIN_CVomit_UpdateAbility_SYMBOL);
+	return (BYTE*)g_MemUtils.SimpleResolve(gamedll, LIN_CVomit_UpdateAbility_SYMBOL);
 #elif defined (_WIN32)
 	return (BYTE*)g_MemUtils.FindLibPattern(gamedll, WIN_CVomit_UpdateAbility_SIG, WIN_CVomit_UpdateAbility_SIGLEN);
 #endif

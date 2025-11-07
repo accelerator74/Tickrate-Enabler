@@ -29,6 +29,8 @@
  * Version: $Id$
  */
 
+#ifndef _INCLUDE_SM_CONVAR_H_
+#define _INCLUDE_SM_CONVAR_H_
 #pragma once
 
 #define protected public
@@ -36,3 +38,5 @@
 #include <tier1/convar.h>
 #undef protected
 #undef private
+
+#endif // _INCLUDE_SM_CONVAR_H_

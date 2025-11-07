@@ -41,17 +41,14 @@
 class BoomerVomitFrameTimePatch : public ICodePatch
 {
 public:
-	BoomerVomitFrameTimePatch(IServerGameDLL * gamedll);
+	BoomerVomitFrameTimePatch(IServerGameDLL* gamedll);
 	~BoomerVomitFrameTimePatch();
 	void Patch();
 	void Unpatch();
 private:
-	void InitializeBinPatches(IServerGameDLL * gamedll);
-	BYTE * FindCVomitUpdateAbility(void * gamedll);
+	void InitializeBinPatches(IServerGameDLL* gamedll);
+	BYTE* FindCVomitUpdateAbility(void* gamedll);
 	PatchManager m_patches;
 };
 
-// Deprecated
-//bool PatchBoomerVomit(IServerGameDLL * gamedll);
-
-#endif
+#endif // __BOOMERVOMITPATCH_H__

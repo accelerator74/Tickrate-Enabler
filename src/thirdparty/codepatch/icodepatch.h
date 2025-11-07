@@ -41,7 +41,7 @@ NOTE: To use this with PatchManager make sure to inherit public ICodePatch
 class ICodePatch
 {
 public:
-	/* 
+	/*
 		patch the code memory
 	*/
 	virtual void Patch() = 0;
@@ -57,4 +57,4 @@ public:
 	virtual ~ICodePatch() {}
 };
 
-#endif
+#endif // _INCLUDE_SOURCEMOD_ICODEPATCH_H_
