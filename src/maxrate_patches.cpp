@@ -60,7 +60,7 @@ BYTE* NetChanDataRatePatch::FindCNetChanSetDataRate(BYTE* engine)
 #if defined (_LINUX)
 	return (BYTE*)g_MemUtils.SimpleResolve(engine, SIG_CNETCHAN_SETDATARATE);
 #elif defined (_WIN32)
-	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CNETCHAN_SETDATARATE, SIG_CNETCHAN_SETDATARATE_LEN);
+	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CNETCHAN_SETDATARATE, SIG_CNETCHAN_SETDATARATE_SIZE);
 #endif
 }
 
@@ -110,7 +110,7 @@ BYTE* GameClientSetRatePatch::FindCGameClientSetRate(BYTE* engine)
 #if defined (_LINUX)
 	return (BYTE*)g_MemUtils.SimpleResolve(engine, SIG_CGAMECLIENT_SETDATARATE);
 #elif defined (_WIN32)
-	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CGAMECLIENT_SETDATARATE, SIG_CGAMECLIENT_SETDATARATE_LEN);
+	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CGAMECLIENT_SETDATARATE, SIG_CGAMECLIENT_SETDATARATE_SIZE);
 #endif
 }
 
@@ -165,7 +165,7 @@ BYTE* ClampClientRatePatch::FindClampClientRate(BYTE* engine)
 #if defined _LINUX
 	return (BYTE*)g_MemUtils.SimpleResolve(engine, SIG_CLAMPCLIENTRATE);
 #elif defined _WIN32
-	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CLAMPCLIENTRATE, SIG_CLAMPCLIENTRATE_LEN);
+	return (BYTE*)g_MemUtils.FindLibPattern(engine, SIG_CLAMPCLIENTRATE, SIG_CLAMPCLIENTRATE_SIZE);
 #endif
 }
 

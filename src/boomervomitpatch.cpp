@@ -119,8 +119,8 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 BYTE* BoomerVomitFrameTimePatch::FindCVomitUpdateAbility(void* gamedll)
 {
 #if defined (_LINUX)
-	return (BYTE*)g_MemUtils.SimpleResolve(gamedll, LIN_CVomit_UpdateAbility_SYMBOL);
+	return (BYTE*)g_MemUtils.SimpleResolve(gamedll, SYM_CVOMIT_UPDATEABILITY);
 #elif defined (_WIN32)
-	return (BYTE*)g_MemUtils.FindLibPattern(gamedll, WIN_CVomit_UpdateAbility_SIG, WIN_CVomit_UpdateAbility_SIGLEN);
+	return (BYTE*)g_MemUtils.FindLibPattern(gamedll, SIG_CVOMIT_UPDATEABILITY, SIG_CVOMIT_UPDATEABILITY_SIZE);
 #endif
 }

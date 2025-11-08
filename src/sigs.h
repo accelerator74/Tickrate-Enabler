@@ -31,23 +31,27 @@
 #ifndef _SIGS_H_
 #define _SIGS_H_
 
+// @A1m`: Does not truncate strings with 00 bytes, 
+// eliminating the need to manually count the number of bytes in a string.
+#define DEFINE_SIG(NAME, RAW) \
+    constexpr char NAME##_RAW[] = RAW; \
+    constexpr size_t NAME##_SIZE = sizeof(NAME##_RAW) - 1; \
+    constexpr const char* NAME = NAME##_RAW
+
 /* Platform specific offset+sig data */
 
 /* CVomit::UpdateAbility() function finding */
-// Same symbol on both l4d1+2
-#define LIN_CVomit_UpdateAbility_SYMBOL "_ZN6CVomit13UpdateAbilityEv"
+// Same symbol on both l4d1+2 (linux)
+#define SYM_CVOMIT_UPDATEABILITY "_ZN6CVomit13UpdateAbilityEv"
 
 // search for "stopvomit" string in CVomit::StopVomitEffect() + ~0x1A0, xref StopVomitEffect + ~0xE0 (farther than other similar)
 #if defined (_L4D)
 	// 81 EC ? ? ? ? 53 55 56 57 8B F9 8B 87
-	#define WIN_CVomit_UpdateAbility_SIG "\x81\xEC\x2A\x2A\x2A\x2A\x53\x55\x56\x57\x8B\xF9\x8B\x87"
-	#define WIN_CVomit_UpdateAbility_SIGLEN 14
+	DEFINE_SIG(SIG_CVOMIT_UPDATEABILITY, "\x81\xEC\x2A\x2A\x2A\x2A\x53\x55\x56\x57\x8B\xF9\x8B\x87");
 #elif defined (_L4D2)
 	// 55 8B EC 81 EC ? ? ? ? A1 ? ? ? ? 33 C5 89 45 FC 53 56 57 8B F9 8B 87 ? ? ? ? 83
-	#define WIN_CVomit_UpdateAbility_SIG "\x55\x8B\xEC\x81\xEC\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\xC5\x89\x45\xFC\x53\x56\x57\x8B\xF9\x8B\x87\x2A\x2A\x2A\x2A\x83"
-	#define WIN_CVomit_UpdateAbility_SIGLEN 31
+	DEFINE_SIG(SIG_CVOMIT_UPDATEABILITY, "\x55\x8B\xEC\x81\xEC\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\xC5\x89\x45\xFC\x53\x56\x57\x8B\xF9\x8B\x87\x2A\x2A\x2A\x2A\x83");
 #endif
-
 
 /* gpGlobals read offsets into CVomit::UpdateAbility() */
 const int g_FrameTimeReadOffsets[] =
@@ -81,8 +85,7 @@ const int g_FrameTimeReadOffsets[] =
 #if defined (_WIN32)
 	#if defined (_L4D)
 		// F3 0F 10 44 24 04 F3 0F 10 0D ? ? ? ? 0F 2F C1 76 10
-		#define SIG_CNETCHAN_SETDATARATE "\xF3\x0F\x10\x44\x24\x04\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x10"
-		#define SIG_CNETCHAN_SETDATARATE_LEN 19
+		DEFINE_SIG(SIG_CNETCHAN_SETDATARATE, "\xF3\x0F\x10\x44\x24\x04\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x10");
 		
 		// Jump from just after first instruction (6 bytes, loads argument float to xmm0)
 		// to the lower-bound comparison instructions
@@ -93,8 +96,7 @@ const int g_FrameTimeReadOffsets[] =
 		#define CNETCHAN_PATCH_JUMP_OFFSET 0x1B
 	#elif defined (_L4D2)
 		// 55 8B EC F3 0F 10 45 08 F3 0F 10 0D ? ? ? ? 0F 2F C1 76 ? 0F 28 C1
-		#define SIG_CNETCHAN_SETDATARATE "\x55\x8B\xEC\xF3\x0F\x10\x45\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x2A\x0F\x28\xC1"
-		#define SIG_CNETCHAN_SETDATARATE_LEN 24
+		DEFINE_SIG(SIG_CNETCHAN_SETDATARATE, "\x55\x8B\xEC\xF3\x0F\x10\x45\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x2A\x0F\x28\xC1");
 
 		#define CNETCHAN_PATCH_OFFSET 8
 		#define CNETCHAN_PATCH_CHECK_BYTE 0xF3
@@ -113,6 +115,7 @@ const int g_FrameTimeReadOffsets[] =
 	#endif
 #endif
 
+
 // @A1m`:
 // Some binaries have a built-in 'ClampClientRate' to 'CGameClient::SetRate' function.
 // Need patch fuctions:
@@ -125,8 +128,7 @@ const int g_FrameTimeReadOffsets[] =
 // @A1m`: 'CGameClient::SetRate' patch, L4D1 linux, L4D2 windows
 #if defined (_WIN32) && defined (_L4D2)
 		// 55 8B EC A1 ? ? ? ? 8B 40 30 85 C0 7E 0B
-		#define SIG_CGAMECLIENT_SETDATARATE "\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0B"
-		#define SIG_CGAMECLIENT_SETDATARATE_LEN 15
+		DEFINE_SIG(SIG_CGAMECLIENT_SETDATARATE, "\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0B");
 
 		#define CGAMECLIENT_PATCH_OFFSET 0x30
 		#define CGAMECLIENT_PATCH_CHECK_BYTE 0x3D
@@ -147,12 +149,12 @@ const int g_FrameTimeReadOffsets[] =
 	#define CGAMECLIENT_PATCH_CHECK_BYTE MOV_R32_IMM32_OPCODE
 #endif
 
+
 // @A1m`: ClampClientRate patch, all binares
 #if defined (_WIN32)
 	#if defined (_L4D)
 		// A1 ? ? ? ? 8B 40 30 85 C0 7E 0C 8B
-		#define SIG_CLAMPCLIENTRATE "\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0C\x8B"
-		#define SIG_CLAMPCLIENTRATE_LEN 13
+		DEFINE_SIG(SIG_CLAMPCLIENTRATE, "\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0C\x8B");
 
 		// Offset 0x2F should be cmp eax, 30000; jle +0x06
 		// Change to JMP +0x0B
@@ -167,8 +169,7 @@ const int g_FrameTimeReadOffsets[] =
 		#define CLAMPCLIENTRATE_PATCH_JUMP_OFFSET 0x0B
 	#elif defined (_L4D2)
 		// 55 8B EC 8B 45 08 53 8B 5D 0C 84 DB 75
-		#define SIG_CLAMPCLIENTRATE "\x55\x8B\xEC\x8B\x45\x08\x53\x8B\x5D\x0C\x84\xDB\x75"
-		#define SIG_CLAMPCLIENTRATE_LEN 13
+		DEFINE_SIG(SIG_CLAMPCLIENTRATE, "\x55\x8B\xEC\x8B\x45\x08\x53\x8B\x5D\x0C\x84\xDB\x75");
 
 		// Jump over the upper bound check
 		#define CLAMPCLIENTRATE_PATCH_CHECK_BYTE 0x3D
