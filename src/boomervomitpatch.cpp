@@ -77,7 +77,7 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 
 	if (!pCVomitUpdateAbility)
 	{
-		throw PatchException("Couldn't find CVomit::UpdateAbility() in server memory.");
+		throw PatchException("Couldn't find 'CVomit::UpdateAbility' in server memory.");
 	}
 
 	for (size_t i = 0; i < NUM_FRAMETIME_READS; i++)
@@ -92,7 +92,7 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 		{
 			// Throw an exception if we can't identify this offset (unexpected instruction!)
 			// TODO: More useful exception here.
-			throw PatchException("CVomit::UpdateAbility() Patch Offset incorrect.");
+			throw PatchException("'CVomit::UpdateAbility' patch Offset incorrect.");
 		}
 
 		memcpy(instr_buf, pTarget, MAX_MOV_INSTR_LEN);

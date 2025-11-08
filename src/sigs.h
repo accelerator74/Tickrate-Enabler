@@ -62,15 +62,15 @@ const int g_FrameTimeReadOffsets[] =
 		{0x2D5, 0x476};
 		/* 725, 1142 */
 		/* 
-		0x2D5	=	725 	= .text:102D05D5 A1 B0 BA 5E 10                          mov     eax, dword_105EBAB0
-		0x476	=	1142	= .text:102D0776 A1 B0 BA 5E 10                          mov     eax, dword_105EBAB0
+		0x2D5	=	725 	= .text:102D0245 A1 90 BA 5E 10                          mov     eax, dword_105EBA90
+		0x476	=	1142	= .text:102D03E6 A1 90 BA 5E 10                          mov     eax, dword_105EBA90
 		*/
 	#elif defined (_L4D2)
 		{0x376, 0x543};
 		/* 886, 1347 */
 		/* 
-		0x376	=	886 	= .text:1036EEC6 A1 90 35 7F 10                          mov     eax, dword_107F3590
-		0x543	=	1347	= .text:1036F093 A1 90 35 7F 10                          mov     eax, dword_107F3590
+		0x376	=	886 	= .text:10372B86 A1 90 76 7F 10                          mov     eax, dword_107F7690
+		0x543	=	1347	= .text:10372D53 A1 90 76 7F 10                          mov     eax, dword_107F3590
 		*/
 	#endif
 #endif
@@ -92,9 +92,9 @@ const int g_FrameTimeReadOffsets[] =
 		#define CNETCHAN_PATCH_CHECK_BYTE 0xF3
 		#define CNETCHAN_PATCH_JUMP_OFFSET 0x1B
 	#elif defined (_L4D2)
-		// 55 8B EC F3 0F 10 45 08 F3 0F 10 0D ? ? ? ? 0F 2F C1 76
-		#define SIG_CNETCHAN_SETDATARATE "\x55\x8B\xEC\xF3\x0F\x10\x45\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76"
-		#define SIG_CNETCHAN_SETDATARATE_LEN 20
+		// 55 8B EC F3 0F 10 45 08 F3 0F 10 0D ? ? ? ? 0F 2F C1 76 ? 0F 28 C1
+		#define SIG_CNETCHAN_SETDATARATE "\x55\x8B\xEC\xF3\x0F\x10\x45\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x2A\x0F\x28\xC1"
+		#define SIG_CNETCHAN_SETDATARATE_LEN 24
 
 		#define CNETCHAN_PATCH_OFFSET 8
 		#define CNETCHAN_PATCH_CHECK_BYTE 0xF3
@@ -104,7 +104,7 @@ const int g_FrameTimeReadOffsets[] =
 	#define SIG_CNETCHAN_SETDATARATE "_ZN8CNetChan11SetDataRateEf"
 
 	#if defined (_L4D)
-		// Change comparison jump at +0x1E to NOP2, removing upper bound check.
+		// Change comparison jump at +0x21 to NOP2, removing upper bound check.
 		#define CNETCHAN_PATCH_OFFSET 0x21
 		#define CNETCHAN_PATCH_CHECK_BYTE JA_8_OPCODE
 	#elif defined (_L4D2)
@@ -122,9 +122,9 @@ const int g_FrameTimeReadOffsets[] =
 // L4D2 windows - 'CGameClient::SetRate', 'ClampClientRate'.
 // L4D2 linux - 'ClampClientRate'.
 
-// @A1m`: CGameClient::SetRate patch, L4D1 linux, L4D2 windows
+// @A1m`: 'CGameClient::SetRate' patch, L4D1 linux, L4D2 windows
 #if defined (_WIN32) && defined (_L4D2)
-		//55 8B EC A1 ? ? ? ? 8B 40 30 85 C0 7E 0B
+		// 55 8B EC A1 ? ? ? ? 8B 40 30 85 C0 7E 0B
 		#define SIG_CGAMECLIENT_SETDATARATE "\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0B"
 		#define SIG_CGAMECLIENT_SETDATARATE_LEN 15
 
@@ -136,10 +136,10 @@ const int g_FrameTimeReadOffsets[] =
 
 	// only for l4d1
 	/*
-		+0x4E
-		B8 30 75 00 00 		mov     eax, 7530h
-		81 FA 30 75 00 00	cmp     edx, 7530h
-		0F 4E C2			cmovle  eax, edx
+		+0x4C
+		B8 30 75 00 00     mov     eax, 7530h
+		81 FA 30 75 00 00  cmp     edx, 7530h
+		0F 4E C            cmovle  eax, edx
 	
 		Filling this with NOPs
 	*/
@@ -159,14 +159,14 @@ const int g_FrameTimeReadOffsets[] =
 
 		/*
 			+0x2F
-			3D 30 75 00 00		cmp     eax, 7530h
-			7E 06				jle     short loc_10180DFC
+			3D 30 75 00 00	cmp     eax, 7530h
+			7E 06			jle     short loc_101713EC
 		*/
 		#define CLAMPCLIENTRATE_PATCH_CHECK_BYTE 0x3D
 		#define CLAMPCLIENTRATE_PATCH_OFFSET 0x2F
 		#define CLAMPCLIENTRATE_PATCH_JUMP_OFFSET 0x0B
 	#elif defined (_L4D2)
-		//55 8B EC 8B 45 08 53 8B 5D 0C 84 DB 75
+		// 55 8B EC 8B 45 08 53 8B 5D 0C 84 DB 75
 		#define SIG_CLAMPCLIENTRATE "\x55\x8B\xEC\x8B\x45\x08\x53\x8B\x5D\x0C\x84\xDB\x75"
 		#define SIG_CLAMPCLIENTRATE_LEN 13
 
@@ -180,7 +180,7 @@ const int g_FrameTimeReadOffsets[] =
 
 	/*
 		+CLAMPCLIENTRATE_PATCH_OFFSET:
-		B8 30 75 00 00 		mov     eax, 7530h
+		B8 30 75 00 00		mov     eax, 7530h
 		81 FA 30 75 00 00	cmp     edx, 7530h
 		0F 4E C2			cmovle  eax, edx
 	*/

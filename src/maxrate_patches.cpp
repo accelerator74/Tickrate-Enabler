@@ -68,12 +68,12 @@ ICodePatch* NetChanDataRatePatch::GeneratePatch(BYTE* pCNetChanSetDataRate)
 {
 	if (!pCNetChanSetDataRate)
 	{
-		throw PatchException("Unable to find CNetChan::SetDataRate!");
+		throw PatchException("Unable to find 'CNetChan::SetDataRate'!");
 	}
 
 	if (pCNetChanSetDataRate[CNETCHAN_PATCH_OFFSET] != CNETCHAN_PATCH_CHECK_BYTE)
 	{
-		throw PatchException("CNetChan::SetDataRate patch offset incorrect!");
+		throw PatchException("'CNetChan::SetDataRate' patch offset incorrect!");
 	}
 
 #if defined _WIN32
@@ -118,18 +118,20 @@ ICodePatch* GameClientSetRatePatch::GeneratePatch(BYTE* pCGameClientSetRate)
 {
 	if (!pCGameClientSetRate)
 	{
-		throw PatchException("Unable to find CGameClient::SetRate!");
+		throw PatchException("Unable to find 'CGameClient::SetRate'!");
 	}
 
 	if (pCGameClientSetRate[CGAMECLIENT_PATCH_OFFSET] != CGAMECLIENT_PATCH_CHECK_BYTE)
 	{
-		throw PatchException("CGameClient::SetRate patch offset incorrect!");
+		throw PatchException("'CGameClient::SetRate' patch offset incorrect!");
 	}
 
 #if defined _WIN32
 	const BYTE replacement[JMP_8_INSTR_LEN] = { JMP_8_OPCODE, CGAMECLIENT_PATCH_JUMP_OFFSET };
 	return new BasicStaticBinPatch<sizeof(replacement)>(pCGameClientSetRate + CGAMECLIENT_PATCH_OFFSET, replacement);
 #elif defined _LINUX
+	// 8B C2 66 0f 1f 84 00 00 00 00 00 0f 1f 00
+	// 14 bytes
 	BYTE replacement[MOV_R32_R32_INSTR_LEN + sizeof(NOP_9) + sizeof(NOP_3)] = { MOV_R32_RM32_OPCODE, MODRM_REG_EAX_EDX, 0,0,0,0,0,0,0,0,0,0,0,0 };
 	memcpy(&replacement[2], NOP_9, sizeof(NOP_9));
 	memcpy(&replacement[11], NOP_3, sizeof(NOP_3));
@@ -171,18 +173,20 @@ ICodePatch* ClampClientRatePatch::GeneratePatch(BYTE* pClampClientRate)
 {
 	if (!pClampClientRate)
 	{
-		throw PatchException("Unable to find ClampClientRate!");
+		throw PatchException("Unable to find 'ClampClientRate'!");
 	}
 
 	if (pClampClientRate[CLAMPCLIENTRATE_PATCH_OFFSET] != CLAMPCLIENTRATE_PATCH_CHECK_BYTE)
 	{
-		throw PatchException("ClampClientRate patch offset incorrect!");
+		throw PatchException("'ClampClientRate' patch offset incorrect!");
 	}
 
 #if defined _WIN32
 	const BYTE replacement[JMP_8_INSTR_LEN] = { JMP_8_OPCODE, CLAMPCLIENTRATE_PATCH_JUMP_OFFSET };
 	return new BasicStaticBinPatch<sizeof(replacement)>(pClampClientRate + CLAMPCLIENTRATE_PATCH_OFFSET, replacement);
 #elif defined (_LINUX)
+	// 8B C2 66 0f 1f 84 00 00 00 00 00 0f 1f 00
+	// 14 bytes
 	BYTE replacement[MOV_R32_R32_INSTR_LEN + sizeof(NOP_9) + sizeof(NOP_3)] = { MOV_R32_RM32_OPCODE, MODRM_REG_EAX_EDX, 0,0,0,0,0,0,0,0,0,0,0,0 };
 	memcpy(&replacement[2], NOP_9, sizeof(NOP_9));
 	memcpy(&replacement[11], NOP_3, sizeof(NOP_3));

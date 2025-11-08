@@ -48,7 +48,7 @@
  // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define TE_VERSION "1.6"
+#define TE_VERSION "1.6.1"
 
 L4DTickRate g_L4DTickRatePlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(L4DTickRate, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_L4DTickRatePlugin);
