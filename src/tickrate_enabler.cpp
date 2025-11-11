@@ -48,7 +48,7 @@
  // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define TE_VERSION "1.6.2"
+#define TE_VERSION "1.6.3"
 
 L4DTickRate g_L4DTickRatePlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(L4DTickRate, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_L4DTickRatePlugin);
@@ -107,8 +107,6 @@ bool L4DTickRate::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gam
 		return false;
 	}
 
-	SH_ADD_HOOK(IServerGameDLL, GetTickInterval, g_pGameDll, SH_STATIC(Handler_GetTickInterval), false);
-
 	try {
 		m_patchManager.Register(new BoomerVomitFrameTimePatch(g_pGameDll));
 		m_patchManager.Register(new NetChanDataRatePatch((BYTE*)g_pEngine));
@@ -124,7 +122,9 @@ bool L4DTickRate::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gam
 		Error("Failed to process all tickrate_enabler patches, bailing out.\n");
 		return false;
 	}
-
+	
+	SH_ADD_HOOK(IServerGameDLL, GetTickInterval, g_pGameDll, SH_STATIC(Handler_GetTickInterval), false);
+	
 	for (size_t i = 0; i < g_iResetCvarsCount; i++) {
 		ConVar* pCvar = g_pCvar->FindVar(g_ResetCvars[i].GetName());
 
