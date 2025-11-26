@@ -44,7 +44,7 @@ class PatchManager
 public:
 	~PatchManager();
 
-	/* 
+	/*
 		register a code patch
 	*/
 	void Register(ICodePatch* patch);
@@ -70,4 +70,4 @@ private:
 	PatchList patchList;
 };
 
-#endif
+#endif // _INCLUDE_SOURCEMOD_PATCH_MANAGER_H_

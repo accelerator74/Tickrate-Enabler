@@ -32,7 +32,7 @@
 
 #include "patchmanager.h"
 
-/* 
+/*
 	register a code patch
 */
 void PatchManager::Register(ICodePatch* patch)
@@ -45,9 +45,9 @@ void PatchManager::Register(ICodePatch* patch)
 */
 void PatchManager::PatchAll()
 {
-	for(PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
+	for (PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
 	{
-		ICodePatch *patch = *iter;
+		ICodePatch* patch = *iter;
 		patch->Patch();
 	}
 }
@@ -57,9 +57,9 @@ void PatchManager::PatchAll()
 */
 void PatchManager::UnpatchAll()
 {
-	for(PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
+	for (PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
 	{
-		ICodePatch *patch = *iter;
+		ICodePatch* patch = *iter;
 		patch->Unpatch();
 	}
 }
@@ -69,9 +69,9 @@ void PatchManager::UnpatchAll()
 */
 void PatchManager::UnregisterAll()
 {
-	for(PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
+	for (PatchList::iterator iter = patchList.begin(); iter != patchList.end(); ++iter)
 	{
-		ICodePatch *patch = *iter;
+		ICodePatch* patch = *iter;
 		delete patch;
 	}
 

@@ -32,7 +32,6 @@
 #define _BASICBINPATCH_H_
 
 #include "thirdparty/codepatch/icodepatch.h"
-
 #include "thirdparty/memutils.h"
 
 
@@ -45,15 +44,15 @@ public:
 	// replacement: ptr to byte array containing patch (replacement) bytes
 	// length: length of patch
 	// patchTimeCopy: Should we copy the original code back out every time we Patch, or is during construction enough?
-	BasicBinPatch(BYTE * target, const BYTE * replacement, size_t length, bool patchTimeCopy=false) 
+	BasicBinPatch(BYTE* target, const BYTE* replacement, size_t length, bool patchTimeCopy = false)
 		: m_length(length), m_pTarget(target), m_pReplacement(NULL), m_pOriginal(NULL),
 		m_bFirstTime(true), m_bPatched(false), m_bPatchTimeCopy(patchTimeCopy)
 	{
-		m_pOriginal = new BYTE[length+length];
+		m_pOriginal = new BYTE[length + length];
 		m_pReplacement = m_pOriginal + length;
 
 		memcpy(m_pReplacement, replacement, length);
-		if(!patchTimeCopy)
+		if (!patchTimeCopy)
 		{
 			memcpy(m_pOriginal, target, length);
 		}
@@ -66,14 +65,14 @@ public:
 
 	void Patch()
 	{
-		if(m_bPatched) return;
+		if (m_bPatched) return;
 
-		if(m_bFirstTime)
+		if (m_bFirstTime)
 		{
 			g_MemUtils.SetMemPatchable(m_pTarget, m_length);
 			m_bFirstTime = false;
 		}
-		if(m_bPatchTimeCopy)
+		if (m_bPatchTimeCopy)
 		{
 			memcpy(m_pOriginal, m_pTarget, m_length);
 		}
@@ -83,15 +82,15 @@ public:
 
 	void Unpatch()
 	{
-		if(!m_bPatched) return;
+		if (!m_bPatched) return;
 		memcpy(m_pTarget, m_pOriginal, m_length);
 	}
 
 private:
 	size_t m_length;
-	BYTE * m_pTarget;
-	BYTE * m_pReplacement;
-	BYTE * m_pOriginal;
+	BYTE* m_pTarget;
+	BYTE* m_pReplacement;
+	BYTE* m_pOriginal;
 	bool m_bFirstTime;
 	bool m_bPatched;
 	bool m_bPatchTimeCopy;
@@ -106,11 +105,11 @@ public:
 	// target: ptr to code to be patched
 	// replacement: ptr to byte array containing patch (replacement) bytes
 	// patchTimeCopy: Should we copy the original code back out every time we Patch, or is during construction enough?
-	BasicStaticBinPatch(BYTE * target, const BYTE * replacement, bool patchTimeCopy=false) 
-	: m_pTarget(target), m_bFirstTime(true), m_bPatchTimeCopy(patchTimeCopy), m_bPatched(false)
+	BasicStaticBinPatch(BYTE* target, const BYTE* replacement, bool patchTimeCopy = false)
+		: m_pTarget(target), m_bFirstTime(true), m_bPatchTimeCopy(patchTimeCopy), m_bPatched(false)
 	{
 		memcpy(m_replacement, replacement, LENGTH);
-		if(!patchTimeCopy)
+		if (!patchTimeCopy)
 		{
 			memcpy(m_original, target, LENGTH);
 		}
@@ -118,14 +117,14 @@ public:
 
 	void Patch()
 	{
-		if(m_bPatched) return;
+		if (m_bPatched) return;
 
-		if(m_bFirstTime)
+		if (m_bFirstTime)
 		{
 			g_MemUtils.SetMemPatchable(m_pTarget, LENGTH);
 			m_bFirstTime = false;
 		}
-		if(m_bPatchTimeCopy)
+		if (m_bPatchTimeCopy)
 		{
 			memcpy(m_original, m_pTarget, LENGTH);
 		}
@@ -135,13 +134,13 @@ public:
 
 	void Unpatch()
 	{
-		if(!m_bPatched) return;
+		if (!m_bPatched) return;
 
 		memcpy(m_pTarget, m_original, LENGTH);
 	}
 
 private:
-	BYTE * m_pTarget;
+	BYTE* m_pTarget;
 	BYTE m_replacement[LENGTH];
 	BYTE m_original[LENGTH];
 	bool m_bFirstTime;
@@ -149,4 +148,4 @@ private:
 	bool m_bPatched;
 };
 
-#endif
+#endif // _BASICBINPATCH_H_

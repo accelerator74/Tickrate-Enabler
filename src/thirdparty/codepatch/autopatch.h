@@ -53,7 +53,7 @@ public:
 		//L4D_DEBUG_LOG("AutoPatch destructor");
 	}
 
-	/* 
+	/*
 		patch the code memory
 	*/
 	void Patch()
@@ -72,7 +72,7 @@ public:
 	/*
 		get the underlying ICodePatch if we need to access it directly for some reason
 	*/
-	TPatchable &GetCodePatch()
+	TPatchable& GetCodePatch()
 	{
 		return codePatch;
 	}
@@ -81,4 +81,4 @@ private:
 	TPatchable codePatch;
 };
 
-#endif
+#endif // _INCLUDE_SOURCEMOD_AUTOPATCH_H_
