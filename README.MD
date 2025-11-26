@@ -21,7 +21,7 @@ and removes the (30k) limits on rate control cvars:
 
     sv_maxupdaterate 100
     sv_maxcmdrate 100
-    fps_max 150 // higher than 100 recommended, as ticks calculated seems to dip otherwise.
+    fps_max 0
 	sv_maxrate 0 // 0 = unlimited, but you can also set this manually. Default is 30k for 30tick, use math.
 	// Setting higher sv_minrate can be used to force users to use higher data rates.
 	

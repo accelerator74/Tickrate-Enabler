@@ -88,7 +88,7 @@ jobs:
           )
 
       - name: Checking out SourceMod
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/sourcemod
           ref: ${{ matrix.sm_branch }}
@@ -96,16 +96,16 @@ jobs:
           submodules: recursive
 
       - name: Checking out MM:Source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/metamod-source
           ref: ${{ matrix.mm_branch }}
           path: metamod-${{ matrix.mm_version }}
 
       - name: Setting up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Setting up ambuild
         run: |
@@ -113,14 +113,14 @@ jobs:
           pip install git+https://github.com/accelerator74/ambuild
 
       - name: Checking out hl2sdk-l4d
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/hl2sdk
           ref: l4d
           path: hl2sdk-l4d
 
       - name: Checking out own repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: src
 
@@ -133,7 +133,7 @@ jobs:
           ambuild
 
       - name: Uploading package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ github.event.repository.name }}-l4d-${{ matrix.os_short }}-${{ env.GITHUB_SHA_SHORT }}
           path: src/build/package
