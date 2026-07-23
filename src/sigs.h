@@ -45,10 +45,10 @@
 #define SYM_CVOMIT_UPDATEABILITY "_ZN6CVomit13UpdateAbilityEv"
 
 // search for "stopvomit" string in CVomit::StopVomitEffect() + ~0x1A0, xref StopVomitEffect + ~0xE0 (farther than other similar)
-#if defined (_L4D)
+#if SOURCE_ENGINE == SE_LEFT4DEAD
 	// 81 EC ? ? ? ? 53 55 56 57 8B F9 8B 87
 	DEFINE_SIG(SIG_CVOMIT_UPDATEABILITY, "\x81\xEC\x2A\x2A\x2A\x2A\x53\x55\x56\x57\x8B\xF9\x8B\x87");
-#elif defined (_L4D2)
+#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 	// 55 8B EC 81 EC ? ? ? ? A1 ? ? ? ? 33 C5 89 45 FC 53 56 57 8B F9 8B 87 ? ? ? ? 83
 	DEFINE_SIG(SIG_CVOMIT_UPDATEABILITY, "\x55\x8B\xEC\x81\xEC\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\xC5\x89\x45\xFC\x53\x56\x57\x8B\xF9\x8B\x87\x2A\x2A\x2A\x2A\x83");
 #endif
@@ -56,20 +56,20 @@
 /* gpGlobals read offsets into CVomit::UpdateAbility() */
 const int g_FrameTimeReadOffsets[] =
 #if defined (_LINUX)
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		{0x3C1}; // L4D1 LINUX
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		{0x5FE}; // L4D2 LINUX
 	#endif
 #elif defined (_WIN32)
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		{0x2D5, 0x476};
 		/* 725, 1142 */
 		/* 
 		0x2D5	=	725 	= .text:102D0245 A1 90 BA 5E 10                          mov     eax, dword_105EBA90
 		0x476	=	1142	= .text:102D03E6 A1 90 BA 5E 10                          mov     eax, dword_105EBA90
 		*/
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		{0x376, 0x543};
 		/* 886, 1347 */
 		/* 
@@ -83,7 +83,7 @@ const int g_FrameTimeReadOffsets[] =
 
 
 #if defined (_WIN32)
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		// F3 0F 10 44 24 04 F3 0F 10 0D ? ? ? ? 0F 2F C1 76 10
 		DEFINE_SIG(SIG_CNETCHAN_SETDATARATE, "\xF3\x0F\x10\x44\x24\x04\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x10");
 		
@@ -94,7 +94,7 @@ const int g_FrameTimeReadOffsets[] =
 		// movss
 		#define CNETCHAN_PATCH_CHECK_BYTE 0xF3
 		#define CNETCHAN_PATCH_JUMP_OFFSET 0x1B
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		// 55 8B EC F3 0F 10 45 08 F3 0F 10 0D ? ? ? ? 0F 2F C1 76 ? 0F 28 C1
 		DEFINE_SIG(SIG_CNETCHAN_SETDATARATE, "\x55\x8B\xEC\xF3\x0F\x10\x45\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x0F\x2F\xC1\x76\x2A\x0F\x28\xC1");
 
@@ -105,11 +105,11 @@ const int g_FrameTimeReadOffsets[] =
 #elif defined (_LINUX)
 	#define SIG_CNETCHAN_SETDATARATE "_ZN8CNetChan11SetDataRateEf"
 
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		// Change comparison jump at +0x21 to NOP2, removing upper bound check.
 		#define CNETCHAN_PATCH_OFFSET 0x21
 		#define CNETCHAN_PATCH_CHECK_BYTE JA_8_OPCODE
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		#define CNETCHAN_PATCH_OFFSET 0x18
 		#define CNETCHAN_PATCH_CHECK_BYTE JB_8_OPCODE
 	#endif
@@ -126,14 +126,14 @@ const int g_FrameTimeReadOffsets[] =
 // L4D2 linux - 'ClampClientRate'.
 
 // @A1m`: 'CGameClient::SetRate' patch, L4D1 linux, L4D2 windows
-#if defined (_WIN32) && defined (_L4D2)
+#if defined (_WIN32) && SOURCE_ENGINE == SE_LEFT4DEAD2
 		// 55 8B EC A1 ? ? ? ? 8B 40 30 85 C0 7E 0B
 		DEFINE_SIG(SIG_CGAMECLIENT_SETDATARATE, "\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0B");
 
 		#define CGAMECLIENT_PATCH_OFFSET 0x30
 		#define CGAMECLIENT_PATCH_CHECK_BYTE 0x3D
 		#define CGAMECLIENT_PATCH_JUMP_OFFSET 0x0C
-#elif defined (_LINUX) && defined (_L4D)
+#elif defined (_LINUX) && SOURCE_ENGINE == SE_LEFT4DEAD
 	#define SIG_CGAMECLIENT_SETDATARATE "_ZN11CGameClient7SetRateEib"
 
 	// only for l4d1
@@ -152,7 +152,7 @@ const int g_FrameTimeReadOffsets[] =
 
 // @A1m`: ClampClientRate patch, all binares
 #if defined (_WIN32)
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		// A1 ? ? ? ? 8B 40 30 85 C0 7E 0C 8B
 		DEFINE_SIG(SIG_CLAMPCLIENTRATE, "\xA1\x2A\x2A\x2A\x2A\x8B\x40\x30\x85\xC0\x7E\x0C\x8B");
 
@@ -167,7 +167,7 @@ const int g_FrameTimeReadOffsets[] =
 		#define CLAMPCLIENTRATE_PATCH_CHECK_BYTE 0x3D
 		#define CLAMPCLIENTRATE_PATCH_OFFSET 0x2F
 		#define CLAMPCLIENTRATE_PATCH_JUMP_OFFSET 0x0B
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		// 55 8B EC 8B 45 08 53 8B 5D 0C 84 DB 75
 		DEFINE_SIG(SIG_CLAMPCLIENTRATE, "\x55\x8B\xEC\x8B\x45\x08\x53\x8B\x5D\x0C\x84\xDB\x75");
 
@@ -187,9 +187,9 @@ const int g_FrameTimeReadOffsets[] =
 	*/
 	#define CLAMPCLIENTRATE_PATCH_CHECK_BYTE MOV_R32_IMM32_OPCODE
 
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		#define CLAMPCLIENTRATE_PATCH_OFFSET 0x40
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 		#define CLAMPCLIENTRATE_PATCH_OFFSET 0x38
 	#endif
 #endif

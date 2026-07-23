@@ -395,12 +395,6 @@ class ExtensionConfig(object):
 
     SdkHelpers.configureCxx(context, binary, sdk)
 
-	# Settings Game
-    if sdk['name'] == 'l4d2':
-      compiler.defines += ['_L4D2']
-    if sdk['name'] == 'l4d':
-      compiler.defines += ['_L4D']
-
     return binary
 
   def HL2Library(self, context, compiler, name, sdk):

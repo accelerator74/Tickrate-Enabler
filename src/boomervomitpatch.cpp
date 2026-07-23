@@ -43,7 +43,7 @@ fakeGlobals g_FakeGlobals = { {0.0, 0.0, 0.0, 0.0}, 0.033333333 };
 fakeGlobals* gp_FakeGlobals = &g_FakeGlobals;
 
 #ifdef _LINUX
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 		fakeGlobals** gpp_FakeGlobals = &gp_FakeGlobals; // olol
 	#endif
 #endif
@@ -104,9 +104,9 @@ void BoomerVomitFrameTimePatch::InitializeBinPatches(IServerGameDLL* gamedll)
 #if defined (_WIN32)
 		*(fakeGlobals***)(instr_buf + offs) = &gp_FakeGlobals;
 #elif defined (_LINUX)
-	#if defined (_L4D)
+	#if SOURCE_ENGINE == SE_LEFT4DEAD
 			*(fakeGlobals****)(instr_buf + offs) = &gpp_FakeGlobals;
-	#elif defined (_L4D2)
+	#elif SOURCE_ENGINE == SE_LEFT4DEAD2
 			*(fakeGlobals***)(instr_buf + offs) = &gp_FakeGlobals;
 	#endif
 #endif
