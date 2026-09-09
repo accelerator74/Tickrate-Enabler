@@ -8,19 +8,7 @@ project.sources += [
   'thirdparty/memutils.cpp',
   'maxrate_patches.cpp',
   'boomervomitpatch.cpp',
-
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook.cpp'),
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_impl_chookidman.cpp'),
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_impl_cproto.cpp'),
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_hookmangen.cpp'),
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_impl_chookmaninfo.cpp'),
-  os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_impl_cvfnptr.cpp')
 ]
-
-# mms2.0+
-sh_hookmangen_x86 = os.path.join(Extension.mms_root, 'core', 'sourcehook', 'sourcehook_hookmangen_x86.cpp')
-if os.path.isfile(sh_hookmangen_x86):
-  project.sources += [sh_hookmangen_x86]
 
 for sdk_name in Extension.sdks:
   sdk = Extension.sdks[sdk_name]
@@ -32,5 +20,14 @@ for sdk_name in Extension.sdks:
       continue
     
     binary = Extension.HL2Config(project, builder, cxx, 'tickrate_enabler', sdk)
+    binary.compiler.cxxincludes += [os.path.join(builder.sourcePath, 'thirdparty', 'khook', 'include')]
+
+    binary.compiler.defines += ['KHOOK_STANDALONE', 'KHOOK_EXPORT']
+    for task in Extension.libkhook:
+      if task.target.arch == binary.compiler.target.arch:
+       binary.compiler.linkflags += [task.binary]
+    for task in Extension.libsafetyhook:
+      if task.target.arch == binary.compiler.target.arch:
+        binary.compiler.linkflags += [task.binary]
 
 Extension.extensions += builder.Add(project)

@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - dev
     tags:
       - '*'
     paths-ignore:
@@ -37,11 +38,11 @@ jobs:
           - "master"
 
         mm_version:
-          - "1.12"
+          - "master"
 
         include:
-          - mm_version: "1.12"
-            mm_branch: "1.12-dev"
+          - mm_version: "master"
+            mm_branch: "master"
 
           - sm_version: "master"
             sm_branch: "master"
@@ -119,6 +120,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: src
+          submodules: recursive
 
       - name: Compiling ${{ github.event.repository.name }}-l4d files
         working-directory: src

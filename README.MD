@@ -31,6 +31,19 @@ and removes the (30k) limits on rate control cvars:
 
 ### Changelog / TODO
 
+1.7: Contributed by Accelerator  
+- Replace `SourceHook` with `KHook`
+
+1.6.3: Contributed by A1m`  
+- Style: fix spacing in pointer declarations and if statements
+- Fixed an ambiguity in the l4d1 windows patch, it is now named correctly.
+- Improving the readability of macros.
+- Removing unnecessary macros.
+- Change macro CGAMECLIENT_PATCH
+- Fix signature not being unique in l4d2 windows
+- Add the ability to automatically calculate the length of signatures
+- Enable SourceHook after applying patches
+
 1.5: Contributed by Accelerator  
 - Fixed CVomit::UpdateAbility offsets.  
 - Some code optimization  

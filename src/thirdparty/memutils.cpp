@@ -29,9 +29,10 @@
 
 #include "memutils.h"
 #include <string.h>
+#include <cstddef>
 
-#include <sourcehook/sourcehook.h>
-#include <sourcehook/sh_memory.h>
+#include "khook/memory.hpp"
+#include "khook.hpp"
 
 #ifdef PLATFORM_LINUX
 #include <fcntl.h>
@@ -41,7 +42,6 @@
 #define PAGE_SIZE			4096
 #define PAGE_ALIGN_UP(x)	((x + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 #define ALIGN(ar) ((long)ar & ~(PAGE_SIZE-1))
-#define PAGE_EXECUTE_READWRITE  PROT_READ|PROT_WRITE|PROT_EXEC
 #endif
 
 #ifdef PLATFORM_APPLE
@@ -645,14 +645,9 @@ bool MemoryUtils::GetLibraryInfo(const void *libPtr, DynLibInfo &lib)
 	return true;
 }
 
-void MemoryUtils::ProtectMemory(void *pAddr, int nLength, int nProt)
-{
-	SourceHook::SetMemAccess(pAddr, nLength, nProt);
-}
-
 void MemoryUtils::SetMemPatchable(void *pAddr, size_t nSize)
 {
-	ProtectMemory(pAddr, (int)nSize, SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+	KHook::Memory::SetAccess(pAddr, (int)nSize, KHook::Memory::Flags::READ | KHook::Memory::Flags::EXECUTE | KHook::Memory::Flags::WRITE);
 
 	return;
 }

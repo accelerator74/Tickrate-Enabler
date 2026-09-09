@@ -33,7 +33,7 @@
 #ifndef _INCLUDE_SOURCEMOD_PATCH_MANAGER_H_
 #define _INCLUDE_SOURCEMOD_PATCH_MANAGER_H_
 
-#include <sourcehook/sh_list.h>
+#include <list>
 #include "icodepatch.h"
 
 /*
@@ -65,7 +65,7 @@ public:
 	void UnregisterAll();
 
 private:
-	typedef SourceHook::List<ICodePatch*> PatchList;
+	typedef std::list<ICodePatch*> PatchList;
 
 	PatchList patchList;
 };

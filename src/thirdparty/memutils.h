@@ -35,9 +35,8 @@
 #include <stdint.h>
 //#include "common_logic.h"
 #if defined PLATFORM_LINUX || defined PLATFORM_APPLE
-#include <sourcehook/sh_vector.h>
 #include "sm_symtable.h"
-using SourceHook::CVector;
+#include <vector>
 #endif
 
 #ifdef PLATFORM_APPLE
@@ -68,8 +67,6 @@ public:
 	void *FindPattern(const void *start, const void *end, const char *pattern, size_t len);
 	void *ResolveSymbol(void *handle, const char *symbol);
 	void * SimpleResolve(void * pBaseAddr, const char * symbol);
-	// Sets protection on the memory
-	void ProtectMemory(void *pAddr, int nLength, int nProt);
 	// Allows the memory to be written to
 	void SetMemPatchable(void *pAddr, size_t nSize);
 
@@ -77,7 +74,7 @@ public:
 	bool GetLibraryInfo(const void *libPtr, DynLibInfo &lib);
 #if defined PLATFORM_LINUX || defined PLATFORM_APPLE
 private:
-	CVector<LibSymbolTable *> m_SymTables;
+	std::vector<LibSymbolTable *> m_SymTables;
 #ifdef PLATFORM_APPLE
 	struct dyld_all_image_infos *m_ImageList;
 	SInt32 m_OSXMajor;

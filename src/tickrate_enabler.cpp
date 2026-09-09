@@ -33,9 +33,7 @@
 #include "thirdparty/sm_convar.h"
 #include "tier0/icommandline.h"
 
-#include "sourcehook.h"
-#include "sourcehook_impl.h"
-#include "sourcehook_impl_chookidman.h"
+#include "khook.hpp"
 
 #include "thirdparty/codepatch/patchmanager.h"
 
@@ -48,16 +46,17 @@
  // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define TE_VERSION "1.6.3"
+#define TE_VERSION "1.7"
 
 L4DTickRate g_L4DTickRatePlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(L4DTickRate, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_L4DTickRatePlugin);
 
-SourceHook::Impl::CSourceHookImpl g_SourceHook;
-SourceHook::ISourceHook* g_SHPtr = &g_SourceHook;
 int g_PLID = 0;
 
-SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);
+L4DTickRate::L4DTickRate() : 
+	m_GetTickInterval(&IServerGameDLL::GetTickInterval, this, &L4DTickRate::GetTickInterval, nullptr)
+{
+}
 
 IServerGameDLL* g_pGameDll = NULL;
 IVEngineServer* g_pEngine = NULL;
@@ -66,9 +65,9 @@ ICvar* g_pCvar = NULL;
 CvarInfo g_ResetCvars[] = { "sv_maxrate", "sv_minrate", "net_splitpacket_maxrate" };
 size_t g_iResetCvarsCount = sizeof(g_ResetCvars) / sizeof(g_ResetCvars[0]);
 
-static float Handler_GetTickInterval()
+KHook::Return<float> L4DTickRate::GetTickInterval(const IServerGameDLL*)
 {
-	float fDefTickInterval = SH_CALL(g_pGameDll, &IServerGameDLL::GetTickInterval)();
+	float fDefTickInterval = KHook::CallOriginal(&IServerGameDLL::GetTickInterval, g_pGameDll);
 	float fTickInterval = fDefTickInterval;
 
 	if (CommandLine()->CheckParm("-tickrate")) {
@@ -81,7 +80,7 @@ static float Handler_GetTickInterval()
 		}
 	}
 
-	RETURN_META_VALUE(MRES_SUPERCEDE, fTickInterval);
+	return { KHook::Action::Supersede, fTickInterval };
 }
 
 //---------------------------------------------------------------------------------
@@ -123,7 +122,7 @@ bool L4DTickRate::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gam
 		return false;
 	}
 	
-	SH_ADD_HOOK(IServerGameDLL, GetTickInterval, g_pGameDll, SH_STATIC(Handler_GetTickInterval), false);
+	m_GetTickInterval.Add(g_pGameDll);
 	
 	for (size_t i = 0; i < g_iResetCvarsCount; i++) {
 		ConVar* pCvar = g_pCvar->FindVar(g_ResetCvars[i].GetName());
@@ -163,7 +162,7 @@ void L4DTickRate::Unload(void)
 	m_patchManager.UnpatchAll();
 	m_patchManager.UnregisterAll();
 
-	SH_REMOVE_HOOK(IServerGameDLL, GetTickInterval, g_pGameDll, SH_STATIC(Handler_GetTickInterval), false);
+	m_GetTickInterval.Remove(g_pGameDll);
 }
 
 //---------------------------------------------------------------------------------
